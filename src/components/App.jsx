@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { ContactForm } from './ContactForm/ContactForm';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { nanoid } from 'nanoid';
+import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
@@ -22,9 +23,15 @@ export class App extends Component {
       number: contact.number,
     };
 
-    this.setState(prevState => ({
-      contacts: [newContact, ...prevState.contacts],
-    }));
+    const isNameExists = this.state.contacts.find(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+    );
+
+    isNameExists
+      ? Notify.failure(`${newContact.name} is already exists`)
+      : this.setState(prevState => ({
+          contacts: [newContact, ...prevState.contacts],
+        }));
   };
 
   filterContact = e => {
